@@ -1,3 +1,6 @@
+const dns = require('node:dns');
+dns.setDefaultResultOrder('ipv4first');
+
 require('dotenv').config();
 const express  = require('express');
 const mongoose = require('mongoose');
@@ -6,22 +9,12 @@ const cors     = require('cors');
 
 const app = express();
 app.use(cors());
-app.use(express.json({ limit: '10mb' })); // large limit for custom sounds (base64)
-app.use(express.static('.'));             // serves spttool.html, css, js
+app.use(express.json({ limit: '10mb' }));
+app.use(express.static('.'));
 
-/* ══════════════════════════════════════════════
-   CONNECT TO MONGODB
-// ══════════════════════════════════════════════ */
-// This tells Mongoose exactly where to go
-const uri = "mongodb://sonampeldon2710_db_user:3DZZG6qOoMPHwM0n@backend0-shard-00-00.cul6win.mongodb.net:27017,backend0-shard-00-01.cul6win.mongodb.net:27017,backend0-shard-00-02.cul6win.mongodb.net:27017/test?ssl=true&replicaSet=atlas-shard-0&authSource=admin&retryWrites=true&w=majority";
-
-mongoose.connect(uri)
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ MongoDB connected'))
-  .catch(err => { 
-    console.error('❌ MongoDB connection error:', err); 
-    process.exit(1); 
-  });
-
+  .catch(err => { console.error('❌ MongoDB connection error:', err); process.exit(1); });
 //* ══════════════════════════════════════════════
 //    SCHEMAS & MODELS
 // ══════════════════════════════════════════════ 
